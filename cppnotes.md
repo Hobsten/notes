@@ -123,6 +123,8 @@ ___
 All variables and methods default to public. Good for containing
 data you want to use later.
 
+___
+
 **immediate if**
 
 	std::string var = x>0? "Positive" : "Negative";
@@ -181,14 +183,19 @@ ___
 **Operator overloads**
 
 	//MyObject < OtherObject
-	bool MyClass::operator<(OtherType obj) const; //member function, takes same type
+	//member function, takes same type
+	bool MyClass::operator<(OtherType obj) const; 
 
 	//OtherObject < MyObject
-	bool operator<(OtherObject const& obj, MyClass const& obj2) const; //free function, different types (friend?).
+	//free function, different types (friend?).
+	bool operator<(OtherObject const& obj, MyClass const& obj2) const; 
 
-	//To use a get() function from a const reference the get method also must be const.
-	//Friend functions cannot access private variables on references (use getX())
-	friend bool operator<(int i, MyClass const& obj); //add this to private: in MyClass and now the friend function can access member vars.
+	/*To use a get() function from a const reference the get method also must be
+	const.
+	Friend functions cannot access private variables on references (use getX()).
+	Add this to private: in MyClass and now the friend function can access 
+	member variables.*/
+	friend bool operator<(int i, MyClass const& obj); 
 
 ___
 
@@ -319,7 +326,8 @@ Creating errors with pointers and the heap:
 		b = nullptr;
 		delete b; // Doesn't crash the program because of the nullptr.
 		a->getName(); // Error, the car doesn't exist.
-	    delete a; // Error, you're deleting the memory of where Ford was, but now theres something else there you deleted.
+	    delete a; // Error, you're deleting the memory of where Ford was, 
+				  // but now theres something else there you deleted.
 	}
 
 How to fix, not remembering to delete a pointer; wrap
