@@ -11,7 +11,10 @@ For example, float to double is allowed, but not double to float.
 * A floating-point value cannot be converted to an integer type.
 * An integer value cannot be converted to a floating-point type.
 
+___
+
 **variables**
+
 
 The smallest size of a datatype is 1 byte. You can check
 the size with sizeof.
@@ -21,15 +24,21 @@ std::cout << sizeof(bool) << std::endl;
 
 ```
 
+___
+
 **char**
 
 The compiler reads **" "** as a collection of chars(*const char* *) and **' '**
 as a char. Printing the *const char pointer* without dereferencing it prints
 the whole string.
 
+___
+
 **apostrophes in number**
 
 1'000'000 is the same as 1000000, they do nothing but makes it easier to read.
+
+___
 
 **long**
 
@@ -40,11 +49,15 @@ float a = 2.2; //double(8bytes)
 float b = 2.2f; //float(4bytes)
 ```
 
+___
+
 **casting**
 
 Don't use roundbracket casts. No warnings:
 
 	double a = 2; int b = static_cast<int>(a); 
+
+___
 
 **Constructor**
 
@@ -59,10 +72,14 @@ of the ways you want to be able to initialize an object.
 	Person(std::string name, std::string lastname);
 	Person()=default; //doesnt do anything
 
+___
+
 **struct**
 
 Struct has all its member variables default to public. Use to represent
 a bunch of data for easy access.
+
+___
 
 **namespaces**
 
@@ -72,6 +89,8 @@ a bunch of data for easy access.
 	using std::endl; //endl
 	using std::string; //string
 	using namespace std; //cout and endl
+
+___
 
 **Inheritance**
 
@@ -87,6 +106,7 @@ Use the baseclass constructor + initialize extra variables directly.
 Base class constructor runs first, then the subclass constructor,
 then the *subclass destructor* runs followed by the *base class destructor*.
 
+___
 
 **Enums**
 
@@ -95,6 +115,8 @@ qualified names without conflicting with code elsewhere in the program.
 
 	enum class Connection { connected, disconmected };
 	Connection c = Connection::connected;
+
+___
 
 **struct**
 
@@ -105,6 +127,8 @@ data you want to use later.
 
 	std::string var = x>0? "Positive" : "Negative";
 
+___
+
 **switch**
 
 Sometimes you want to use an object to check some member variable,
@@ -114,15 +138,21 @@ but you dont want it to be in scope after the switch.
 	case 1:
 		break;
 
+___
+
 **Error messages**
 
 Compiler error, usually in header files (declaration).
 Linker error, usually in cpp files (implementation).
 
+___
+
 **increment/decrement**
 
 	i++; // return the old value, then increments
 	++i; // increments and return the new value
+
+___
 
 **comparisons**
 
@@ -135,6 +165,8 @@ Linker error, usually in cpp files (implementation).
 	if(hello() || world())
 		//hello() runs first, if true then world() wont be called at all
 
+___
+
 **Bitwise operators**
 
 	0100 & 0011 == 0000; //AND
@@ -143,6 +175,8 @@ Linker error, usually in cpp files (implementation).
 
 	4 >> 1 == 8; //All bits 1 pos to the right
 	4 << 1 == 2; //All bits 1 pos to the left
+
+___
 
 **Operator overloads**
 
@@ -155,6 +189,8 @@ Linker error, usually in cpp files (implementation).
 	//To use a get() function from a const reference the get method also must be const.
 	//Friend functions cannot access private variables on references (use getX())
 	friend bool operator<(int i, MyClass const& obj); //add this to private: in MyClass and now the friend function can access member vars.
+
+___
 
 **Templates**
 
@@ -205,6 +241,9 @@ Change *your* class if it doesn't work
 
 access the template code and add a template specialization.
 
+___
+
+
 **References**
 
 A reference is an alias for something else. Cannot be changed once its set. 
@@ -213,6 +252,8 @@ Cannot be declared without setting it to a value.
 	Car a("Ford");
 	Car& aRef = a; //must point to something
 	aRef.getName() == a.getName(); //true
+
+___
 
 **Pointers**
 
@@ -229,6 +270,8 @@ nullptr, easier to track down error).
 	int * const cPointer //cant be changed to point elsewhere.
 	int const* cPointer //cant change the value of what its pointing to.
 
+___
+
 **const**
 
 A function declared const **can't** call a function that's not const.
@@ -241,6 +284,7 @@ Mark as const last/after the datatype.
 	Car getMilage() {return milage;} // needs to be const
 	Car const a("Ford");
 	a.getMilage(); //error const object call to non-const method
+___
 
 **Memory Management**
 
@@ -314,6 +358,8 @@ to the pool, but this is a somewhat weird warehouse with no keys or guards, so
 you can still do whatever you want. However, it might cause problems with the 
 new owner of the box, so it's expected that you follow the rules.
 
+___
+
 **Smart Pointers** *(trying to avoid all the constructors and overloads)*
 
 - unique_ptr, low overhead, can't copy it (use std::move), cleans up after going 
@@ -322,6 +368,8 @@ out of scope.
 - shared_ptr, can be copied, has reference counting
 
 - weak_ptr, can 'look' at the shared_ptr without bumping the reference count.
+
+___
 
 **Inheritance**
 
@@ -356,6 +404,7 @@ is a nullptr.
 	Vehicle* b = &a;
 	Car* c = static_cast<Car*>(b);
 
+___
 
 **slicing**
 
@@ -366,6 +415,8 @@ function will disappear. This happens also when passing a double to int.
 
 You can't copy a base object into a derived object either. Use reference and 
 pointer to pass to functions to avoid slicing.
+
+___
 
 **Other**
 
