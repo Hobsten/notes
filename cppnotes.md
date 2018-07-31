@@ -51,6 +51,67 @@ float b = 2.2f; //float(4bytes)
 
 ___
 
+**static**
+
+Declaring a member variable static makes every instance of that 
+class share the same variable (same memory address for that one variable).
+
+```
+class Obj { static int staticVar; }
+
+Obj one; Obj two; Obj three;
+one.setStaticVar(5); //now all three Obj's share the variable with the value 5
+```
+When a variable is declared static outside a struct/class, the variable is only
+going to be linked internally inside this (.cpp file) translation unit.
+The linker is not gonna look outside of the scope of this translation unit for
+that symbol definition. It kind of makes the variable *"private"* to its file.
+The same rule applies to functions.
+
+```
+//First.cpp
+static int sVar = 1;
+
+//main.cpp
+int sVar = 70;
+std::cout << sVar << std::endl; //70
+
+```
+
+What you cannot do (*two global variables, already defined*):
+
+```
+//First.cpp
+int sVar = 1; //Global variable, error
+
+//main.cpp
+int sVar = 70; //Global variable, error
+```
+
+Make the linker find and refer to the defined variable:
+
+```
+//First.cpp
+int sVar = 1;
+
+//main.cpp
+extern int sVar; //looks for sVar in an external file, First.cpp
+std::cout << sVar << std::endl; //1
+```
+
+But static makes a variable internal to the translation unit, making this
+produce an error:
+
+```
+//First.cpp
+static int sVar = 1; //linker cant see this in global scope
+
+//main.cpp
+extern int sVar; //looks for sVar in external file
+std::cout << sVar << std::endl; //error, can't find integer with that name
+```
+___
+
 **casting**
 
 Don't use roundbracket casts. No warnings:
