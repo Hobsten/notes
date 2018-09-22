@@ -309,6 +309,25 @@ Change *your* class if it doesn't work
 
 access the template code and add a template specialization.
 
+*use cases*
+
+Templates can be used to allocate sizes for example when creating an array:
+
+	template<typename T, int N>
+	class Array
+	{
+	private:
+		T my_array[N];
+	};
+
+	Array<int, 5> temp; 
+	// same as..
+
+	class Array
+	{
+	private:
+		int my_array[5];
+	};
 ___
 
 
@@ -489,7 +508,8 @@ ___
 
 **Linking**
 
-Static linking means that the library gets put into your executable.
+Static linking means that the library gets put into your executable. You can drag and drop the executable 
+wherever and it will still run because all the dependencies are withing the .exe file.
 
 Dynamic linking means that the library is linked at runtime,
 for example through a function.
