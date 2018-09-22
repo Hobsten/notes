@@ -487,6 +487,19 @@ pointer to pass to functions to avoid slicing.
 
 ___
 
+**Linking**
+
+Static linking means that the library gets put into your executable.
+
+Dynamic linking means that the library is linked at runtime,
+for example through a function.
+
+	.lib static library (if we dont want compile-time linking)
+	.dll files are the dynamic link libraries
+	dll.lib the static library used with dll (contains the location of all the
+	functions and symbols inside the .dll file)
+	
+
 **Other**
 
 Instead of #include you could just paste the declarations into every file
