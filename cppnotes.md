@@ -340,14 +340,31 @@ Cannot be declared without setting it to a value.
 	Car& aRef = a; //must point to something
 	aRef.getName() == a.getName(); //true
 
+    
+    
+    void Increment(int value) { value++; } // value is a copy of the input variable
+    void IncrementRef(int& value) { value++; }
+
+    //main.cpp
+    int a = 2;
+    Increment(a); // a is still 2
+    IncrementRef(a); // a == 3 now
+
+
+    //refs can't be changed to reference another variable
+    int a = 4;
+    int b = 10;
+    
+    int& bRef = b;
+    bRef = a; //now b = 4 and bRef still references b
+    
 ___
 
 **Pointers**
 
-A pointer is an alias for something else. It can be declared and point to nothing.
+A pointer is just a variable containing an address (a number) pointing to somewhere in memory. Every variable has a memory address. Dereferencing a pointer gives you the value that is stored in that address. If you print out the pointer itself it will give you a number - the memory address it is pointing to.  It can be declared and point to nothing.
 It can be changed to point to something else than what its pointing to.
-Don't dereference a pointer that has not been initialized (initialize with 
-nullptr, easier to track down error).
+Don't dereference a pointer that has not been initialized (initialize with nullptr, easier to track down error).
 
 	Car* point = nullptr; Car a("Ford");
 	point = &a;
@@ -356,6 +373,27 @@ nullptr, easier to track down error).
 
 	int * const cPointer //cant be changed to point elsewhere.
 	int const* cPointer //cant change the value of what its pointing to.
+
+
+    void Increment(int value) { value++; } // value is a copy of the input variable
+    void IncrementPtr(int* value) { (*value)++; }
+
+    //main.cpp
+    int a = 2;
+    Increment(a); // a is still 2
+    IncrementPtr(&a); // a == 3 now
+
+
+
+    int a = 4;
+    int b = 1;
+    int* ptr = &a;
+    (*ptr)++; //a=5
+    ptr = &b;
+    (*ptr)++; //b=2
+
+    char* cPtr = new char[8]; //8 bytes of memory
+    char** cPtrPtr = &cPtr; //a pointer to a pointer
 
 ___
 
