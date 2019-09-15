@@ -44,7 +44,7 @@ Machine Learning needs a robust infrastructure and good pipelines to be effectiv
 
 ---
 
-**Types of machine learning**
+### Types of machine learning
 
 - **Supervised learning** - The models are trained using labeled training data. They are used to make predictions on unseen or future data. The goal is to learn connections between input and desired output. Function approximation. This is where 99% of machine learning resides. E.g. how likely is a customer to repay this potential loan?  
 - **Semisupervised learning**  - A small portion of the data is labeled. Label one person in Google Photo and their clustering algorithm detect that person in the rest of your photos. 
@@ -70,7 +70,7 @@ Visualization of the data is an essential part of machine learning. Carefully de
 
 **Training data** - the data used to train the model. The model will be bad at *generalization* if the model is trained on all the data. Each training example, or row, is called a *training instance*.  
 **Test data** - a subset of the training data used to measure the accuracy of the predictions made by the model. Test data is used to evaluate the model.  
-**Attribute** = data type (e.g., "Mileage")
+**Attribute** = data type (e.g., "Mileage")  
 **Feature** = data type + value (e.g., "Mileage = 1000 miles")  
 **Feature engineering** is the process of figuring out a good set of features to train on. It is one of the most important parts of machine learning. Most of the time and code is spent collecting data, cleaning data and designing good features:
 
@@ -173,6 +173,91 @@ When picking a model you want to train a lot of them with different hyperparamet
 
 # End-to-End Machine Learning
 
+1. Look at the big picture.
+2. Get the data.
+3. Discover and visualize the data to gain insights.
+4. Prepare the data for Machine Learning algorithms.
+5. Select a model and train it.
+6. Fine-tune your model.
+7. Present your solution.
+8. Launch, monitor, and maintain your system.
+
+#### Look at the big picture
+
+What are you building your model on and what is the purpose of creating this model? Does your system's output supply another system's input?
+
+- Data *pipeline*, a sequence of data processing components (data manipulation and data transformations). Each components processes large amounts of data through their input, and spits out the result in another *data store*. Another component can pull data from this data store and process it. The components aren't directly connected, but indirectly connected through the data store which acts as an interface. The components need not use the outputted data instantly. 
+
+Is there a current (worse) solution for performance reference for your model? From there start selecting what [types of machine learning](#types-of-machine-learning) will best fit your new model.  
+
+Selecting a performance measure to evaluate the system. *Norm* is a quantity which describes the size of a vector (e.g., *when a vector is stretched, the norm is multiplied by the stretching factor*).
+
+- Regression
+	- *Root Mean Square Error* (**RMSE**) measures the *standard deviation* of the errors the system makes in its predictions (*Euclidian norm*). It uses the formula to measure the distance of the predicted values from the label values. RMSE is a *cost function*. RMSE is good when outliers are exponentially rare. RMSE is more sensitive to outliers than MAE.
+	- *Mean Absolute Error* (**MAE**) measures the distance between the vector of predictions and the vector of target values (*Manhattan norm*). MAE is also a *cost function*.  
+![Manhattan vs Euclidean](images/manhattan-euclidean.png)
+
+Verify your assumptions before continuing. Is it really a regression task or is it a classification task? Where is the output going and what is it going to be used for? Will the next component convert your continuous values into discrete categories?
+
+#### Get the data
+
+After downloading the data, inspect the data to get a sense of the data you'll be working with. Run different methods on the data to see statistics, size of the data, check if there are categorical attributes, and plot the data into simple histograms. Is any of the data preprocessed? Scaled up/down? Are there missing values? Are there any caps to the different attributes? Is this important? Those instances may need to be removed or proper values needs to be requested.  
+
+Create a **test set** (~20%) of the full data set. Avoid data snooping bias. **Data snooping bias** is when you take a look at the data and select a particular kind of machine learning model based on some interesting pattern you noticed while taking a glance at the data. This may misguide the evaluation on the test set and produce a generalization error that is too optimistic. Make sure the test set is the same for each run and that the machine learning models don't train on any of the test instances.  
+Use the *stratified sampling* method to make sure both sets are representative of the overall population.  
+> **Statified sampling** is a sampling method that divide the population into homogeneous subgroups called *strata*, and the right number of instances is sampled from each stratum to guarantee that the test set is representative of the overall population.  
+
+For continuous numerical attributes you might want to label specific ranges into categories to make sure you get a representative test set. *You should not have too many strata, and each stratum should be large enough*.  
+
+#### Discover and visualize the data
+
+*Create a copy of the dataset while you experiment.*
+
+For geographical data scatter plots can be insightful. Tweak different visualization parameters to make patterns stand out. Continuous values (e.g., housing prices) can plotted using color maps. You can also use a clustering algorithm to detect main clusters 
+
+Look for correlations in the data.  
+
+- If the dataset isn't too large you can use the *standard correlation coefficient* (measures linear correlations) where coefficient -1 and 1 are strong negative and positive correlations, and 0 means no correlation. 
+- A scatter matrix plots every attribute against each other. Quite helpful if you don't know which attributes to plot against each other to look for strong correlations.  
+
+Here you might want to experiment with combining some attributes. They should make sense e.g., "total\_rooms" and "households" in an area can be combined into "rooms\_per\_household". With new attributes you can rerun some correlation methods to get a sense of how good these new attributes are. The most important correlation is how attributes correlate to the **target** attribute.  
+  
+After all this is done you have a prototype. Later, you can come back an reiterate this process if the system is suboptimal. 
+
+#### Prepare the data
+
+Data preparations should be executed by custom functions because
+
+- they can be used to reproduce the same transformations on any dataset
+- you will eventually end up with a library of transformation functions you can reuse
+- you can use these functions in your live system to transform the new data before feeding them to algorithms 
+- it's easier this way by trying multiple transformations quickly to determine the best combination.
+
+Separate the predictors (attributes) and the target values (labels).  
+  
+**Clean the data** by handling missing features; remove instances, remove attribute or fill in some value (zero, mean, median). This must be done on the test set aswell, so remember to save the mean value calculated from the training set (use *Imputer* for this in Python). 
+
+Scikit-Learn's API
+
+- **Estimator** - any object that can estimate some parameters based on a dataset.  
+- **Transformers** - estimators that can transform a dataset. 
+- **Predictors** - estimators that are capable of making predicitons given a dataset e.g., a linear regression model. 
+
+With custom transformer one can easily add *automatic hyperparameter tuning* e.g., to enable or disable combined attributes (easy to see if these help or not)
+  
+Turn categorical attributes into numerical attributes (most machine learning attributes can't work with text). Avoid using only one column with more than two numerical values to represent a set of categorical values, because the machine learning algorithms will assume two nearby values are more similar than two distant values. 
+
+- *One hot encoding* - One binary attribute per category. 
+	- *Sparse matrix* - a matrix that stores the location of the nonzero elements. One hot encoding can create thousands of new columns, and a sparse matrix can help save a lot of space by not storing all the zeros. 
+- *LabelBinarizer* in Python does transformations (text-\>int-\>one-hot vectors) in one shot.
+
+**Feature scaling** is one of the most important *transformations* in data preparation for machine learning algorithms. Machine learning algorithms don't work well with numerical attributes that have very different scales. 
+
+- **Min-max scaling** (or *Normalization*) - values are shifted and rescaled so that they end up ranging from 0 to 1 (subtracting min value and dividing by max minus min). Doesn't handle outliers well.
+- **Standardization** - subtracts the mean value, and then it divides by the variance so that the resulting distribution has unit variance. Handles outliers well. 
+
+***All these steps can be 'scripted' together as a sequence of transformations as one Transformation Pipeline, and it can be reused***
+
 # Classification
 
 # Training Models
@@ -185,3 +270,8 @@ When picking a model you want to train a lot of them with different hyperparamet
 
 ***Linear separability*** refers to the fact that classes of patterns with *n*-dimensional vector x = (x_1, x_2, ... , x_n) can be separated with a single decision surface.  
 ![Linear Separability](images/linear-separability.png)
+
+***Standard deviation*** is a measure of spread, that is, how spread out a set of data is. [4,6,6,5,4] and [1,3,9,7,5] both have a mean of 5, but the former one has a low standard deviation, while the latter has a **high** standard deviation (the set is dispersed over a wider range of values). 68% percent of the data should fall within one standard deviation above or below the mean. 95% percent of the data should fall within two standard deviations above or below the mean.  
+<img src="images/bell-curve.png" width="450"/>
+
+A ***percentile*** indicates the value below which a given percentage of observations in a group of observations falls. For example, 25% of the values are lower than 20, and 75% of the values are lower than 45.
