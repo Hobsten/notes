@@ -119,8 +119,7 @@ box.add(new Double(10.1));
 `MyClass<A>` has no relationship to `MyClass<B>`, regardless of whether or not `A` and `B` are related.
 ```
 public void boxTest(Box<Number> n) { /* ... */ };
-boxTest(new Box<Integer>); // Error, Box<Integer> is not a subtype of Box<Number>
-													 // Integer is only a subtype of Number
+boxTest(new Box<Integer>); // Error, Box<Integer> is not a subtype of Box<Number> (Integer is only a subtype of Number)
 ```
 
 `ArrayList<String>` is a subtype of `List<String>` which is a subtype of `Collection<String>` because `ArrayList<String>` implements `List<String>` which extends `Collection<String>`.  
