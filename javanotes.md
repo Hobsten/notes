@@ -81,6 +81,7 @@ public class Box<T extends Integer> {
     System.out.println("U: " + u.getClass().getName());
   }
 }
+
 ```
 A type variable may have multiple bounds, but remember to specify classes before interfaces. Order matters.
 Operators like `>` doesn't work on objects, but a type parameter can be bounded by the `Comparable<T>` interface.
@@ -103,11 +104,17 @@ public static <T extends Comparable<T>> int countGreaterThan(T[] array, T elem) 
 
 ##### Inheritance and Subtypes
 ---
-You can assign an object of one type to an object of another type if compatible (subclass object assigned to superclass object)
+You can assign an object of one type to an object of another type if compatible (subclass object assigned to superclass object). In other words, you can assign an object of a type to an object of its supertype.
 ```
 public void someMethod(Number n) { /* ... */ }
 someMethod(new Integer(10)); 
 someMethod(new Double(10.1));
+```
+or
+```
+Object someObject = new Object();
+Integer someInteger = new Integer(10);
+someObject = someInteger;   
 ```
 Same with generics
 ```
@@ -125,3 +132,75 @@ boxTest(new Box<Integer>); // Error, Box<Integer> is not a subtype of Box<Number
 `ArrayList<String>` is a subtype of `List<String>` which is a subtype of `Collection<String>` because `ArrayList<String>` implements `List<String>` which extends `Collection<String>`.  
 The type argument must be the same however to preserve the subtyping relationship.  
 `MyCustomList<E, F>` are a subtype of `List<E>` as long as it `extends List<E>` and the type argument `E` match. 
+
+##### Parameterized type before return type
+
+Here the type parameter will be typically defined in the class declaration to which the method belongs `class MyClass<T> { // insert method here }`
+```
+public void createArray(T sample){
+    ArrayList<T> list = new ArrayList<T>();
+    list.add(sample);
+}
+```
+This method is a *generic method* because it defines its own type parameter.
+```
+public <T> void createArray(T sample){
+    ArrayList<T> list = new ArrayList<T>();
+    list.add(sample);
+}
+```
+
+##### Type inference
+
+*Type inference* is the process of automatically deducing unspecified data types of an expression based on the contextual information.
+*Type witness* (readability) is when you specify the parameter instead of just letting the compiler infer the type.  
+###### Generic Methods
+```
+// Adding objects to list
+BoxDemo.<Integer>addBox(Integer.valueOf(10), listOfIntegerBoxes); // Type witness
+BoxDemo.addBox(Integer.valueOf(20), listOfIntegerBoxes);
+```
+###### Generic Classes
+Use the diamond `<>` to take advantage of type inference during generic class instantiation and not have to specify type parameters.  
+In the last example `HashMap()` refers to the `HashMap` raw type, and not the `HashMap<String, List<String>>` type.
+```
+Map<String, List<String>> myMap = new HashMap<>();
+Map<String, List<String>> myMap = new HashMap(); // unchecked conversion warning
+```
+
+Constructors can be generic (declare their own formal parameters) in both generic and non-generic classes. Notice the preceding type parameter `<T>`. This is needed because it is declaring its own formal type parameter which is not declared by the class.
+```
+class MyClass<X> {
+  <T> MyClass(T t) {
+    // ...
+  }
+}
+
+new MyClass<Integer>(""); // an instance of the parameterized type MyClass<Integer> with String as the formal type parameter T
+```
+
+###### Target Types
+The target type of an expression is the data type that the Java compiler expects depending on where the expression appears.
+`static <T> List<T> emptyList();`  
+`List<String> fooList = Collections.emptyList();`  
+The `List<String>` data type is the `target type`.  
+`emptyList` returns a value of type `List<T>`, so the compiler infers that the type argument `T` must be the value `String`. 
+With type witness  
+`List<String> fooList = Collections.<String>emptyList();`  
+Java can use method arguments as target types also
+```
+void processStringList(List<String> stringList) {
+	// ...
+}
+
+processStringList(Collections.emptyList());
+```
+`processStringList` requires an argument type of `List<String>` and `Collections.emptyList` returns a value of `List<T>`, so with the target type of `List<String>` the compiler infers the type argument `T` as `String`. 
+
+
+###### Type Target vs Type Inference
+
+In `int a = b` the *target type* is int. The expression, `b`, should have a type of `int` because its context requires that. 
+*Type inference* by contrast is the process used to determine the type of an expression (`b`). The target type may be used as part of the type inference process. 
+
+
