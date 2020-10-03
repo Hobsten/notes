@@ -203,4 +203,48 @@ processStringList(Collections.emptyList());
 In `int a = b` the *target type* is int. The expression, `b`, should have a type of `int` because its context requires that. 
 *Type inference* by contrast is the process used to determine the type of an expression (`b`). The target type may be used as part of the type inference process. 
 
+##### Wildcards
+
+The `?` is called a *wildcard* and represents an unknown type. The wildcard can be used as a type for a 
+- parameter
+- field
+- local variable
+- return type (sometimes)
+The wildcard is never used as a type argument or a 
+- generic method invocation
+- generic class instance creation
+- supertype
+
+###### Upper Bounded Wildcards
+
+Relaxing the restrictions on a variable. Use the wildcard `?`, followed by the `extends` ( also means `implements` in this context) keyword, followed by its *upper bound* `Class`:  `List<? extends Number>`. A method like this would work on lists of `Number` and subtypes of `Number`. 
+```
+List<Number> // more restrictive, matches a list of type Number only
+List<? extends Number> // matches a list of type Number or any of its subclasses 
+```
+All methods of the *upper bound* class can be accessed
+```
+public static double sumOfList(List<? extends Number> list) {
+    double s = 0.0;
+    for (Number n : list)
+        s += n.doubleValue();
+    return s;
+}
+```
+
+###### Unbound Wildcares
+
+The unbounded wildcard `?` specifies an *unknown type*. Useful when
+- writing a method that can be implemented using functionality provided in the `Object` class
+- the code is using methods in the generic class that don't depend on the type parameter. E.g. `List.size` or `List.clear`  
+`?` and `? extends Object` are synonymous.
+
+###### Lower Bounded Wildcards
+
+Restricts the unknown type to be a specific type or a *super type* of that type. Use the wildcard `?`, followed by the `super` keyword, followed by its *lower bound* `Class`: `List<? super Integer>`.
+```
+List<Integer> // more restrictive, matches a list of type Number only
+List<? super Integer> // matches a list of type Integer or any of its superclasses
+```
+
 
