@@ -70,6 +70,7 @@ public class TextEditor {
 }
 ```
 The flow of control has been "*inverted*". You have delegated control of this dependency to some external system (Spring, Beans?).
+
 ---
 
 ## Aspect Oriented Programming (AOP)
