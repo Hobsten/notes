@@ -47,6 +47,8 @@ And now we can retrieve it's address dependency from anywhere
 Company company = context.getBean("company", Company.class); // ("High Street", 1000)
 ```
 
+Spring manages object instances in a container (`ApplicationContext`). Each class informs Spring about its dependencies and Spring will inject these objects (`Beans`) into each class. Every class has references to all object they require. The classes maintain low coupling this way. 
+
 #### Standard scenario vs Inversion of Control scenario
 
 `TextEditor` depends on the implementation of `SpellChecker`
