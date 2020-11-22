@@ -72,3 +72,66 @@ Controller 	<--- Cats Presentation ---	View
 Client 			<--- <ul> Cats </ul> -----	Controller
 
 If an error occurs, the controller will request an error view from View
+
+## Singleton
+
+When there are classes you only need one instance of through the whole application. An example of this is a class that fetches data from a database (`UserService`).
+
+```
+public DatabaseService {
+	// This instance is created when the JVM initializes the class (before loading it)
+	static DatabaseService databaseService = new DatabaseService();
+
+	private DatabaseService(){ // code ..}
+
+	public static DatabaseService getInstance() {
+		return databaseService;
+	}
+}
+```
+**Lazy Instantion**, instantiate the object when you use it
+```
+public DatabaseService {
+	static DatabaseService databaseService;
+
+	private DatabaseService(){ // code ..}
+
+	public static DatabaseService getInstance() {
+		// Make sure a new object isn't created each time this method is called
+		if (databaseService == null) {
+			databaseService = new DatabaseService();
+		}
+		return databaseService;
+	}
+}
+```
+This solution will fail when using multiple threads as two threads may enter `getInstance()` at the same time while `databaseService` is `null`
+
+Bad solution. The first thread enters, and the rest has to wait. This addresses the problem but instroduces a performance problem.
+```
+public static synchronized DatabaseService getInstance() { // ... }
+```
+
+Good solution. Here we check for `null` two times and make the last check `synchronized` to make sure only one thread is checking the value at a time. This does not introduce a performance issue as the waiting only occurs in the second `if`-block and only at the start when the instance hasn't been created yet.
+```
+public static DatabaseService getInstance() { 
+
+	if (databaseService == null) {
+		synchronized(DatabaseService.class) {
+			if(databaseService == null)
+				databaseService = new DatabaseService();
+		}
+	}
+	return databaseService;
+
+}
+```
+
+With `Enum`
+```
+// Has implicit private constructor
+enum DatabaseService {
+	// same as getInstance()
+	INSTANCE;
+}
+```
