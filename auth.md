@@ -1,13 +1,13 @@
 
 Just a reminder on `encoding` and `decoding` before getting into it:  
-`"hello" | urlencode == "hello"`
-`"hello" | base64encode == "aGVsbG8="`
-`"hello" | base64urlencode == "aGVsbG8="`	// same as base64, except '+' '/' '=' is replaced with '-' '_' '%'
-`"hello" | urlencode == "68656c6c6f"`
+`"hello" | urlencode == "hello"`  
+`"hello" | base64encode == "aGVsbG8="`  
+`"hello" | base64urlencode == "aGVsbG8="	// same as base64, except '+' '/' '=' is replaced with '-' '_' '%'`  
+`"hello" | urlencode == "68656c6c6f"`  
 
 ## JWT (RFC 7519)
 
-[jwt.io](https://jwt.io)
+A good resource [jwt.io](https://jwt.io)
 
 JSON Web Tokens allow you to digitally sign information (claims) with a signature that can be verified at a later time with a secret signing key. 
 * Securely transfer information between any two entities. 
@@ -48,13 +48,14 @@ hmac // HMAC(base64UrlEncode(header) + "." + base64UrlEncoded(payload), secret)
 ```
 * Server side
 ```
+// no database queries needed
 HMAC(request.header + "." + request.payload, secret) == request.hmac
 ```
 
 
 
 
-JWT in code
+#### Alternative, JWT in code
 ```
 var headers = base64URLencode(myHeaders);
 var claims = base64URLencode(myClaims);
