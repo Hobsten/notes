@@ -19,6 +19,8 @@ JWT is used for
 * **Authentication**
 * **Information exchange**
 
+![](images/jwt.png)
+
 Three distinct parts of a JWT that is URL encoded
 * **Header** - metadata for the token and at a minimal contains the type of the signature and/or encryption algorithm
 * **Claims** - contains any information that you want signed (* authentication token*)
