@@ -135,3 +135,139 @@ enum DatabaseService {
 	INSTANCE;
 }
 ```
+
+## Builder
+
+A class delegates object creation to a `Builder` object instead of creating the objects directly (makes it possible to change the representation of the object independently later). Encapsulates creating and assembling the parts of a complex object in a separate `Builder` object. 
+
+It is hard and error prone to write client code when there are multiple constructors, each with a large set of parameters. 
+```
+public House(String foundation, String structure, String roof, boolean painted);
+public House(String foundation, String structure, String roof, boolean painted, boolean furnished);
+...
+```
+*Which constructor should I invoke? What will be the default values of the parameters? Does the first boolean represent furnishing or painting?*  
+Tackling this with `getters` and `setters`
+```
+House house=new House();
+house.setBasement("Concrete, brick, and stone");
+house.setRoof("Concrete and reinforced steel");
+house.setStructure("Concrete, mortar, brick, and reinforced steel");
+house.setFurnished(true);
+house.setPainted(true);
+```
+But now the house collapsed because the roof was built before the structure. And also, customers are calling in with different requirements for their houses; a prefabricated house, a tree house, and an Igloo. The builder pattern handles these scenarios. The builder pattern allows you to enforce a step-by-step process to construct a complex object as a finished product. 
+
+* We don't want the client to have to know every step the order of every step to construct a house
+* With different types of houses (representations) we should have specialized builders who take care of the required implementation for each
+* A `ConstructionEngineer` should not be directly tied to any particular builder. The `ConstructionEngineer` is only tied to a `HouseBuilder` interface, and can direct any builder that implements this interface. More builders can be added without changing the implementation and we maintain low coupling. 
+
+* Product (`House`): A class that represents the product to create.
+* Builder (`HouseBuilder`): An interface to build the parts of a product.
+* ConcreteBuilder (`ConcreteHouseBuilder` and `TreeHouseBuilder`): Are concrete classes that implement Builder to construct and assemble parts of the product and return the finished product.
+* Director (`ConstructionEngineer`): A class that directs a builder to perform the steps in the order that is required to build the product.
+
+**House.java**
+```
+public class House {
+    private String foundation;
+    private String structure;
+    private String roof;
+    private boolean furnished;
+    private boolean painted;
+    // getters and setters ...
+}
+```
+
+**HouseBuilder.java**
+```
+public interface HouseBuilder {
+    void buildFoundation();
+    void buildStructure();
+    void buildRoof();
+    void paintHouse();
+    void furnishHouse();
+    House getHouse();
+}
+```
+**ConcreteHouseBuilder.java**
+```
+public class ConcreteHouseBuilder implements HouseBuilder{
+    private House house;
+    public ConcreteHouseBuilder() {
+        this.house = new House();
+    }
+    @Override
+    public void buildFoundation() {
+        house.setFoundation("Concrete, brick, and stone");
+        System.out.println("ConcreteHouseBuilder: Foundation complete...");
+    }
+    @Override
+    public void buildStructure(){
+      house.setStructure("Concrete, mortar, brick, and reinforced steel");
+      System.out.println("ConcreteHouseBuilder: Structure complete...");
+    }
+    @Override
+    public void buildRoof(){
+      house.setRoof("Concrete and reinforced steel");
+        System.out.println("ConcreteHouseBuilder: Roof complete...");
+    }
+    @Override
+    public void paintHouse(){
+      house.setPainted(true);
+        System.out.println("ConcreteHouseBuilder: Painting complete...");
+    }
+    @Override
+    public void furnishHouse(){
+    house.setFurnished(true);
+        System.out.println("ConcreteHouseBuilder: Furnishing complete...");
+    }
+    public House getHouse() {
+        System.out.println("ConcreteHouseBuilder: Concrete house complete...");
+        return this.house;
+    }
+}
+```
+
+**ConstructionEngineer.java**  
+```
+public class ConstructionEngineer {
+    private HouseBuilder houseBuilder;
+    public ConstructionEngineer(HouseBuilder houseBuilder){
+        this.houseBuilder = houseBuilder;
+    }
+    public House constructHouse() {
+        this.houseBuilder.buildFoundation();
+        this.houseBuilder.buildStructure();
+        this.houseBuilder.buildRoof();
+        this.houseBuilder.paintHouse();
+        this.houseBuilder.furnishHouse();
+        return this.houseBuilder.getHouse();
+    }
+}
+```
+The `ConstructionEngineer` is not tied to any particular builder. New builder classes can be added without making any changes to the construction process. 
+
+
+**Test**
+```
+public class ConstructionEngineerTest {
+    @Test
+    public void testConstructHouse() throws Exception {
+        HouseBuilder concreteHouseBuilder = new ConcreteHouseBuilder();
+        ConstructionEngineer engineerA = new ConstructionEngineer(concreteHouseBuilder);
+        House houseA = engineerA.constructHouse();
+        System.out.println("House is: "+houseA);
+        PrefabricatedHouseBuilder prefabricatedHouseBuilder = new PrefabricatedHouseBuilder();
+        ConstructionEngineer engineerB = new ConstructionEngineer(prefabricatedHouseBuilder);
+        House houseB = engineerB.constructHouse();
+        System.out.println("House is: "+houseB);
+    }
+}
+```
+The client is now insulated from the object creation process. The client just provide the **Director** a **Builder** to use. The abstract factory pattern is similar to the builder pattern, but the abstract factory is more concerned with **what** is made, while the builder is more concerned with **how** it is made. 
+
+
+## Chain-of-responsibility
+
+https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern
